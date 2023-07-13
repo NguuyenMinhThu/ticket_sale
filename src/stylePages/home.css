@@ -1,0 +1,23 @@
+.logo{
+    height: 58px;
+    width: 133px;
+    margin: 20px;
+}
+.img-avatar{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+.input-chung{
+  
+    width: 250px;
+    height: 30px;
+    padding: 10px 270px 10px 12px;
+    align-items: center;
+    /* gap: 10px; */
+    border-radius: 8    px;
+    border: 1.5px solid var(--gray-gray-100, #D4D4D7);   
+}
+.gray-row {
+    background-color: #807c7c;
+  }
