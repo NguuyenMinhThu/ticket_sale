@@ -7,14 +7,30 @@ import {
   SearchOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
-import { Button, Card, Col, Layout, Menu, Row, Table } from "antd";
+import {
+  Button,
+  Card,
+  Col,
+  Layout,
+  Menu,
+  Modal,
+  Row,
+  Table,
+  DatePicker,
+  Radio,
+  Checkbox,
+} from "antd";
 import Sider from "antd/es/layout/Sider";
-import React from "react";
+import React, { useState } from "react";
 import "../stylePages/home.css";
 import { Content, Header } from "antd/es/layout/layout";
 import { ColumnsType } from "antd/es/table";
 
 const DSVe: React.FC = () => {
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [usageStatus, setUsageStatus] = useState<string | null>(null);
+  const [selectedCheckboxes, setSelectedCheckboxes] = useState<string[]>([]);
   const menu = (
     <Menu>
       <Menu.Item key="1" onClick={() => (window.location.href = "/vaitro")}>
@@ -97,7 +113,7 @@ const DSVe: React.FC = () => {
       sd: "Het han",
       dateUsed: "2023-02-05", // Thêm giá trị ngày sử dụng
       dateReleased: "2023-03-13", // Thêm giá trị ngày xuất vé
-      checkin: "Cổng   1",
+      checkin: "Cổng 1",
     },
     {
       key: "2",
@@ -160,6 +176,29 @@ const DSVe: React.FC = () => {
       checkin: "Cổng 1",
     },
   ];
+  const handleDateChange = (date: any) => {
+    setSelectedDate(date);
+  };
+  const handleFilterClick = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleModalCancel = () => {
+    setIsModalVisible(false);
+  };
+  const handleUsageStatusChange = (e: any) => {
+    setUsageStatus(e.target.value);
+  };
+  const handleCheckboxChange = (e: any) => {
+    const { value, checked } = e.target;
+    if (checked) {
+      setSelectedCheckboxes((prevCheckboxes) => [...prevCheckboxes, value]);
+    } else {
+      setSelectedCheckboxes((prevCheckboxes) =>
+        prevCheckboxes.filter((checkbox) => checkbox !== value)
+      );
+    }
+  };
   return (
     <>
       <Layout>
@@ -173,7 +212,7 @@ const DSVe: React.FC = () => {
             <Menu.Item
               className="menu-item"
               onClick={() => {
-                window.location.href = "/dashboard";
+                window.location.href = "/";
               }}
             >
               <HomeOutlined style={{ marginRight: "8px" }} />
@@ -182,7 +221,7 @@ const DSVe: React.FC = () => {
             <Menu.Item
               className="menu-item"
               onClick={() => {
-                window.location.href = "/thietbi";
+                window.location.href = "/test";
               }}
             >
               <LaptopOutlined style={{ marginRight: "8px" }} />
@@ -191,7 +230,7 @@ const DSVe: React.FC = () => {
             <Menu.Item
               className="menu-item"
               onClick={() => {
-                window.location.href = "/doisoatve";
+                window.location.href = "/ve";
               }}
             >
               <ProfileOutlined style={{ marginRight: "8px" }} />
@@ -200,7 +239,7 @@ const DSVe: React.FC = () => {
             <Menu.Item
               className="menu-item"
               onClick={() => {
-                window.location.href = "/doisoatve";
+                window.location.href = "/caidat";
               }}
             >
               <SettingOutlined style={{ marginRight: "8px" }} />
@@ -211,7 +250,7 @@ const DSVe: React.FC = () => {
         <Layout>
           <Header style={{ background: "white" }}>
             <Row gutter={20} justify="start" align="middle">
-              <Col span={20} >
+              <Col span={20}>
                 <div style={{ position: "relative" }}>
                   <input
                     style={{
@@ -229,21 +268,22 @@ const DSVe: React.FC = () => {
                       transform: "translateY(-50%)",
                     }}
                   >
-                    { <SearchOutlined />}
+                    {<SearchOutlined />}
                   </span>
                 </div>
               </Col>
-             
-               <i style={{marginRight:'10px', fontSize:'24px'}}> <MailOutlined /></i>
-             
-               <i style={{marginRight:'10px', fontSize:'24px'}}> <BellOutlined /></i>
-             
-                <img
-                  className="img-avatar"
-                  src="/asset/image/logo1.png"
-                  alt=""
-                />
-             
+
+              <i style={{ marginRight: "10px", fontSize: "24px" }}>
+                {" "}
+                <MailOutlined />
+              </i>
+
+              <i style={{ marginRight: "10px", fontSize: "24px" }}>
+                {" "}
+                <BellOutlined />
+              </i>
+
+              <img className="img-avatar" src="/asset/image/logo1.png" alt="" />
             </Row>
           </Header>
           <Content>
@@ -273,10 +313,27 @@ const DSVe: React.FC = () => {
                   </div>
                 </Col>
                 <Col span={5}>
-                  <Button style={{ marginLeft: "240px" }}>Lọc vé</Button>
+                  <Button
+                    style={{
+                      marginLeft: "230px",
+                      borderColor: "orange",
+                      color: "orange",
+                    }}
+                    onClick={handleFilterClick}
+                  >
+                    Lọc vé
+                  </Button>
                 </Col>
                 <Col span={4}>
-                  <Button style={{ marginLeft: "50px" }}>Xuất file</Button>
+                  <Button
+                    style={{
+                      marginLeft: "50px",
+                      borderColor: "orange",
+                      color: "orange",
+                    }}
+                  >
+                    Xuất file
+                  </Button>
                 </Col>
               </Row>
               <Row style={{ marginTop: "30px" }}>
@@ -290,9 +347,82 @@ const DSVe: React.FC = () => {
                   }}
                 />
               </Row>
+              
             </Card>
           </Content>
+          <Modal
+           title={<h1 style={{ fontSize: '24px', textAlign: 'center' }}>Lọc vé</h1>}
+            visible={isModalVisible}
+            onCancel={handleModalCancel}
+            footer={[
+              <Button
+                style={{
+                  borderColor: "orange",
+                  color: "orange",
+                  width: "160px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  margin: "0 auto",
+                }}
+                key="submit"
+                onClick={handleModalCancel}
+              >
+                Lọc
+              </Button>,
+            ]}
+          >
+            <div>
+              <Row>
+                <Col span={12}>
+                  <h4>Từ ngày</h4>
+                  <DatePicker
+                    style={{ marginLeft: 10, width: 130 }}
+                    onChange={handleDateChange}
+                  />
+                </Col>
+                <Col span={12}>
+                  <h4>Đến ngày đi</h4>
+                  <DatePicker
+                    style={{ marginLeft: 10, width: 130 }}
+                    onChange={handleDateChange}
+                  />
+                </Col>
+              </Row>
+              <Row style={{ marginTop: 16 }}>
+                <Col span={24}>
+                  <h4>Tình trạng sử dụng</h4>
+                  <Radio.Group
+                    onChange={handleUsageStatusChange}
+                    value={usageStatus}
+                  >
+                    <Radio value={null}>Tất cả</Radio>
+                    <Radio value="used">Đã sử dụng</Radio>
+                    <Radio value="unused">Chưa sử dụng</Radio>
+                    <Radio value="expired">Hết hạn</Radio>
+                  </Radio.Group>
+                </Col>
+              </Row>
+              <Row style={{ marginTop: 16 }}>
+                <Col span={12}>
+                  <h4>Cổng Check-in</h4>
+                  <div>
+                  <Checkbox
+                    value="checkbox1"
+                    checked={selectedCheckboxes.includes("checkbox1")}
+                    onChange={handleCheckboxChange}
+                  >
+                    Tất Cả 
+                  </Checkbox>
+                  
+                  </div>
+                </Col>
+              </Row>
+              
+            </div>
+          </Modal>
         </Layout>
+        
       </Layout>
     </>
   );
