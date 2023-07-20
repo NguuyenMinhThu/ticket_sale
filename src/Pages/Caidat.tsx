@@ -16,7 +16,7 @@ import { Content, Header } from "antd/es/layout/layout";
 import { ColumnsType } from "antd/es/table";
 
 const Caidat: React.FC = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false); 
   const [isChecked, setIsChecked] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState("");
   const menu = (

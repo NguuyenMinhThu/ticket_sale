@@ -21,16 +21,46 @@ import {
   Checkbox,
 } from "antd";
 import Sider from "antd/es/layout/Sider";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../stylePages/home.css";
 import { Content, Header } from "antd/es/layout/layout";
-import { ColumnsType } from "antd/es/table";
+import { firestore } from "../Firebase/firebase";
 
+interface TicketData {
+  STT: string;
+  Numbersticket: string;
+  Bookingcode: string;
+  Checkin: string;
+  dateexprot: string;
+  dateuse: string;
+  status: string;
+}
 const DSVe: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [usageStatus, setUsageStatus] = useState<string | null>(null);
   const [selectedCheckboxes, setSelectedCheckboxes] = useState<string[]>([]);
+  const [TicketList, setTicketList] = useState<TicketData[]>([]);
+
+  useEffect(() => {
+    const loadFirestoreData = async () => {
+      try {
+        const querySnapshot = await firestore.collection("ticket").get();
+        const tickets: any[] = [];
+        querySnapshot.forEach((doc: any) => {
+          const data = doc.data();
+          tickets.push(data);
+        });
+        setTicketList(tickets);
+      } catch (error) {
+        console.error("Lỗi khi load dữ liệu từ Firestore:", error);
+      }
+    };
+
+    loadFirestoreData();
+  }, []);
+
+
   const menu = (
     <Menu>
       <Menu.Item key="1" onClick={() => (window.location.href = "/vaitro")}>
@@ -48,132 +78,48 @@ const DSVe: React.FC = () => {
     </Menu>
   );
 
-  //Bảng table
-  const columns: ColumnsType<any> = [
+  const columns = [
     {
       title: "STT",
-      dataIndex: "namedn",
-      key: "namedn",
+      dataIndex: "STT",
+      key: "STT",
       width: 150,
     },
     {
-      title: "Booking code",
-      dataIndex: "name",
-      key: "name",
-      width: 200,
+      title: "Bookingcode",
+      dataIndex: "Bookingcode",
+      key: "Bookingcode",
+      width: 150,
     },
     {
       title: "Số vé",
-      dataIndex: "sove",
-      key: "sove",
+      dataIndex: "Numbersticket",
+      key: "Numbersticket",
       width: 150,
     },
     {
-      title: "Tình trạng sử dụng",
-      dataIndex: "sd",
-      key: "sd",
-      width: 200,
+      title: "Tình trạng sd",
+      dataIndex: "status",
+      key: "status",
+      width: 200   ,
     },
     {
       title: "Ngày sử dụng",
-      dataIndex: "dateUsed",
-      key: "dateUsed",
+      dataIndex: "dateuse",
+      key: "dateuse",
       width: 200,
     },
     {
       title: "Ngày xuất vé",
-      dataIndex: "dateReleased",
-      key: "dateReleased",
+      dataIndex: "dateexport",
+      key: "dateexport",
       width: 200,
     },
     {
-      title: "Cổng check-in",
-      dataIndex: "checkin",
-      key: "check",
+      title: "Checkin",
+      dataIndex: "Checkin",
+      key: "Checkin",
       width: 200,
-    },
-    // {
-    //   title: " ",
-    //   dataIndex: "updateAction",
-    //   key: "updateAction",
-    //   width: 100,
-    //   render: (_text: any, record: UserData) => (
-    //     <>
-    //       <Button onClick={() => handleUpdate(record.id)}>Cập nhật</Button>
-    //     </>
-    //   ),
-    // },
-  ];
-  const data = [
-    {
-      key: "1",
-      namedn: "1",
-      name: "ALT20210501",
-      sove: 1111111,
-      sd: "Het han",
-      dateUsed: "2023-02-05", // Thêm giá trị ngày sử dụng
-      dateReleased: "2023-03-13", // Thêm giá trị ngày xuất vé
-      checkin: "Cổng 1",
-    },
-    {
-      key: "2",
-      namedn: "2",
-      name: "ALT202120393",
-      sove: 12121212,
-      sd: "Het han",
-      dateUsed: "2023-10-18", // Thêm giá trị ngày sử dụng
-      dateReleased: "2023-12-30", // Thêm giá trị ngày xuất vé
-      checkin: "Cổng 1",
-    },
-    {
-      key: "3",
-      namedn: "3",
-      name: "ALT202102405",
-      sove: 1212000,
-      sd: "Het han",
-      dateUsed: "2023-08-02", // Thêm giá trị ngày sử dụng
-      dateReleased: "2023-09-13", // Thêm giá trị ngày xuất vé
-      checkin: "Cổng 1",
-    },
-    {
-      key: "4",
-      namedn: "4",
-      name: "ALT20210560",
-      sove: 1212000,
-      sd: "Het han",
-      dateUsed: "2023-05-10", // Thêm giá trị ngày sử dụng
-      dateReleased: "2023-10-20", // Thêm giá trị ngày xuất vé
-      checkin: "Cổng 1",
-    },
-    {
-      key: "5",
-      namedn: "5",
-      name: "ALT20215650",
-      sove: 1212000,
-      sd: "Het han",
-      dateUsed: "2023-08-01", // Thêm giá trị ngày sử dụng
-      dateReleased: "2023-09-30", // Thêm giá trị ngày xuất vé
-      checkin: "Cổng 1",
-    },
-    {
-      key: "6",
-      namedn: "6",
-      name: "ALT202100234",
-      sove: 1212000,
-      sd: "Het han",
-      dateUsed: "2023-07-10", // Thêm giá trị ngày sử dụng
-      dateReleased: "2023-09-20", // Thêm giá trị ngày xuất vé
-      checkin: "Cổng 1",
-    },
-    {
-      key: "7",
-      namedn: "7",
-      name: "ALT202123022",
-      sove: 1212000,
-      sd: "Het han",
-      dateUsed: "2023-08-02", // Thêm giá trị ngày sử dụng
-      dateReleased: "2023-09-13", // Thêm giá trị ngày xuất vé
-      checkin: "Cổng 1",
     },
   ];
   const handleDateChange = (date: any) => {
@@ -253,7 +199,7 @@ const DSVe: React.FC = () => {
               <Col span={20}>
                 <div style={{ position: "relative" }}>
                   <input
-                    style={{
+                    style={{  
                       width: "25%",
                       fontSize: "20px",
                       paddingRight: "20px",
@@ -264,7 +210,7 @@ const DSVe: React.FC = () => {
                     style={{
                       position: "absolute",
                       top: "50%",
-                      right: "765px",
+                      right: "773px",
                       transform: "translateY(-50%)",
                     }}
                   >
@@ -304,7 +250,7 @@ const DSVe: React.FC = () => {
                       style={{
                         position: "absolute",
                         top: "50%",
-                        right: "558px",
+                        right: "565px",
                         transform: "translateY(-50%)",
                       }}
                     >
@@ -339,19 +285,19 @@ const DSVe: React.FC = () => {
               <Row style={{ marginTop: "30px" }}>
                 <Table
                   columns={columns}
-                  // className="custom-table"
-                  dataSource={data}
+                  dataSource={TicketList}
                   pagination={{
                     pageSize: 10,
                     pageSizeOptions: ["10", "20", "30"],
                   }}
                 />
               </Row>
-              
             </Card>
           </Content>
           <Modal
-           title={<h1 style={{ fontSize: '24px', textAlign: 'center' }}>Lọc vé</h1>}
+            title={
+              <h1 style={{ fontSize: "24px", textAlign: "center" }}>Lọc vé</h1>
+            }
             visible={isModalVisible}
             onCancel={handleModalCancel}
             footer={[
@@ -407,22 +353,19 @@ const DSVe: React.FC = () => {
                 <Col span={12}>
                   <h4>Cổng Check-in</h4>
                   <div>
-                  <Checkbox
-                    value="checkbox1"
-                    checked={selectedCheckboxes.includes("checkbox1")}
-                    onChange={handleCheckboxChange}
-                  >
-                    Tất Cả 
-                  </Checkbox>
-                  
+                    <Checkbox
+                      value="checkbox1"
+                      checked={selectedCheckboxes.includes("checkbox1")}
+                      onChange={handleCheckboxChange}
+                    >
+                      Tất Cả
+                    </Checkbox>
                   </div>
                 </Col>
               </Row>
-              
             </div>
           </Modal>
         </Layout>
-        
       </Layout>
     </>
   );

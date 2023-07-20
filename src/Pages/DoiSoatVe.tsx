@@ -232,7 +232,7 @@ const DoiSoatVe: React.FC = () => {
                         marginLeft: "100px",
                         backgroundColor: "orange",
                         color: "white",
-                      }}
+                      }}    
                     >
                       Chốt vé soát
                     </Button>
